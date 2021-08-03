@@ -4,6 +4,8 @@ import axios from 'axios';
 import SearchForm from './Components/SearchForm';
 import GifList from './Components/GifList';
 
+// DON'T THINK THE APP WILL WORK BECAUSE OF THE LOCKDOWN THAT FB PUT ON GIPHY. I NEED TO HAVE A PROFILE AND ALL THAT SHIT
+
 class App extends Component {
   
   constructor() {
@@ -39,6 +41,17 @@ class App extends Component {
       });
   }
 
+  performSearch = (query) => {
+    axios.get(`http://api.giphy.com/v1/gifs/search?q=${query}&limit=24&api_key=dc6zaTOxFJmzC`)
+      .then(res => {
+        this.setState({
+          gifs: res.data.data
+        })
+      })
+      .catch(error => {
+        console.log('Error fetching and parsing data', err);
+      });
+  }
 
   render() { 
     console.log(this.state.gifs);
@@ -47,7 +60,7 @@ class App extends Component {
         <div className="main-header">
           <div className="inner">
             <h1 className="main-title">GifSearch</h1>
-            <SearchForm />      
+            <SearchForm onSearch={this.performSearch} />      
           </div>   
         </div>    
         <div className="main-content">
