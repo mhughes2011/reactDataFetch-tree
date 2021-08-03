@@ -4,7 +4,6 @@ import axios from 'axios';
 import SearchForm from './Components/SearchForm';
 import GifList from './Components/GifList';
 
-// DON'T THINK THE APP WILL WORK BECAUSE OF THE LOCKDOWN THAT FB PUT ON GIPHY. I NEED TO HAVE A PROFILE AND ALL THAT SHIT
 
 class App extends Component {
   
@@ -12,7 +11,8 @@ class App extends Component {
     super();
 
     this.state = {
-      gifs: []
+      gifs: [],
+      loading: true
     };
   }
 
@@ -30,22 +30,15 @@ class App extends Component {
 
   // This is how to get data via Axios
   componentDidMount() {
-    axios.get('http://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC')
-      .then(res => {
-        this.setState({
-          gifs: res.data.data
-        })
-      })
-      .catch(error => {
-        console.log('Error fetching and parsing data', err);
-      });
+    this.performSearch();
   }
 
-  performSearch = (query) => {
+  performSearch = (query = 'hell yes') => {
     axios.get(`http://api.giphy.com/v1/gifs/search?q=${query}&limit=24&api_key=dc6zaTOxFJmzC`)
       .then(res => {
         this.setState({
-          gifs: res.data.data
+          gifs: res.data.data,
+          loading: false
         })
       })
       .catch(error => {
@@ -64,7 +57,11 @@ class App extends Component {
           </div>   
         </div>    
         <div className="main-content">
-          <GifList data={this.state.gifs} />
+          {
+            (this.state.loading)
+            ? <p>Loading...</p>
+            : <GifList data={this.state.gifs} />
+          }
         </div>
       </div>
     );
